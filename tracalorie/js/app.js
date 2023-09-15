@@ -10,6 +10,7 @@ class CalorieTracker {
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
+    this._displayCaloriesProgress();
   }
 
   // Public Methods addMeal and addWorkout //
@@ -58,8 +59,34 @@ class CalorieTracker {
 
   _displayCaloriesRemaining() {
     const caloriesRemainingEl = document.getElementById('calories-remaining');
+    const progressEl = document.getElementById('calorie-progress');
     const remaining = this._calorieLimit - this._totalCalories;
     caloriesRemainingEl.innerHTML = remaining;
+
+    if (remaining <= 0) {
+      caloriesRemainingEl.parentElement.parentElement.classList.remove(
+        'bg-light'
+      );
+      caloriesRemainingEl.parentElement.parentElement.classList.add(
+        'bg-danger'
+      );
+      progressEl.classList.remove('bg-success');
+      progressEl.classList.add('bg-danger');
+    } else {
+      caloriesRemainingEl.parentElement.parentElement.classList.remove(
+        'bg-danger'
+      );
+      caloriesRemainingEl.parentElement.parentElement.classList.add('bg-light');
+      progressEl.classList.remove('bg-danger');
+      progressEl.classList.add('bg-success');
+    }
+  }
+
+  _displayCaloriesProgress() {
+    const progressEl = document.getElementById('calorie-progress');
+    const percentage = (this._totalCalories / this._calorieLimit) * 100;
+    const width = Math.min(percentage, 100);
+    progressEl.style.width = `${width}%`;
   }
 
   _render() {
@@ -67,6 +94,7 @@ class CalorieTracker {
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
+    this._displayCaloriesProgress();
   }
 }
 
@@ -88,7 +116,9 @@ class Workout {
 
 const tracker = new CalorieTracker(); // new instance of CalorieTracker
 const breakfast = new Meal('Breakfast', 400); // new instance of Meal
+const lunch = new Meal('Lunch', 3000); // new instance of Meal
 tracker.addMeal(breakfast); // adds the breakfast meal to the tracker variable
+tracker.addMeal(lunch);
 
 const run = new Workout('Morning Run', 300); // new instance of Workout
 tracker.addWorkouts(run); // adds the run workout to the tracker variable
